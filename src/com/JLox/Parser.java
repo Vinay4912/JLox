@@ -27,17 +27,30 @@ public class Parser {
         
       List<Stmt> statements = new ArrayList<>();
         while (!isAtEnd()) {
-          statements.add(statement());
+          statements.add(declaration());
         }
         return statements;
       }
 
   private Expr expression() {
-    return equality();
+    // return equality();
+    return assignment();
+  }
+
+  private Stmt declaration() {
+    try {
+      if (match(Var)) return varDeclaration();
+      
+      return statement();
+    } catch (ParseError error) {
+      synchronize();
+      return null;
+    }
   }
 
   private Stmt statement() {
     if (match(Print)) return printStatement();
+    if (match(LeftBrace)) return new Stmt.Block(block());
 
     return expressionStatement();
   }
@@ -48,10 +61,51 @@ public class Parser {
     return new Stmt.Print(value);
   }
 
+  private Stmt varDeclaration() {
+    Token name = consume(TokenType.Identifier, "Expect variable name");
+
+    Expr initializer = null;
+    if(match(Equal)) {
+      initializer = expression();
+    }
+
+    consume(Semicolon, "Expect ';' after variable declaration");
+    return new Stmt.Var(name, initializer);
+  }
+
   private Stmt expressionStatement() {
     Expr expr = expression();
     consume(Semicolon, "Expect ';' after expression.");
     return new Stmt.Expression(expr);
+  }
+
+  private List<Stmt> block() {
+    List<Stmt> statements = new ArrayList<>();
+
+    while(!check(RightBrace) && !isAtEnd()) {
+      statements.add(declaration());
+    }
+
+    consume(RightBrace, "Expect '}' after block");
+    return statements;
+  }
+
+  private Expr assignment() {
+    Expr expr = equality();
+
+    if(match(Equal)) {
+      Token equals = previous();
+      Expr value = assignment();
+
+      if (expr instanceof Expr.Variable) {
+        Token name = ((Expr.Variable)expr).name;
+        return new Expr.Assign(name, value);
+      }
+
+    error(equals, "Invalid assignment target.");
+    }
+
+    return expr;
   }
 
   private Expr equality() {
@@ -114,6 +168,10 @@ public class Parser {
 
     if(match(Number, String)) {
       return new Expr.Literal(previous().literal);
+    }
+
+    if(match(Identifier)) {
+      return new Expr.Variable(previous());
     }
 
     if(match(LeftParen)) {

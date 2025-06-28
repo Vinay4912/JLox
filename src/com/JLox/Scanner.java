@@ -136,7 +136,7 @@ class Scanner {
 
     String text = source.substring(start, current);
     TokenType type = keywords.get(text);
-    if (text == null)
+    if (type == null)
       type = Identifier;
     addToken(type);
   }

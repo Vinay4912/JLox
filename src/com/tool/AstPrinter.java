@@ -3,6 +3,8 @@ package com.tool;
 import com.JLox.scanner.Token;
 import com.JLox.scanner.TokenType;
 import com.JLox.parser.Expr;
+import com.JLox.parser.Expr.Assign;
+import com.JLox.parser.Expr.Variable;
 
 public class AstPrinter implements Expr.Visitor<String> {
   public String print(Expr expr) {
@@ -54,5 +56,17 @@ public class AstPrinter implements Expr.Visitor<String> {
             new Expr.Literal(45.67)));
 
     System.out.println(new AstPrinter().print(expresssion));
+  }
+
+  @Override
+  public String visitAssignExpr(Assign expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitAssignExpr'");
+  }
+
+  @Override
+  public String visitVariableExpr(Variable expr) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'visitVariableExpr'");
   }
 }
