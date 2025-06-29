@@ -42,6 +42,7 @@ public class Main {
     private static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
+        StringBuffer program = new StringBuffer();
 
         while (true) {
             System.out.print(">>> ");
