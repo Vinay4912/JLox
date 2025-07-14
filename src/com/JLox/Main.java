@@ -42,17 +42,43 @@ public class Main {
     private static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
-        StringBuffer program = new StringBuffer();
-
+      
+        StringBuilder multilineBuffer = new StringBuilder();
+        int openBraces = 0;
+      
         while (true) {
-            System.out.print(">>> ");
-            String line = reader.readLine();
-            if (line == null)
-                break;
-            run(line);
-            hadError = false;
+          if (openBraces == 0) {
+            System.out.print(">>> "); // new statement
+          } else {
+            System.out.print("... "); // inside a block
+          }
+      
+          String line = reader.readLine();
+          if (line == null) break; // Ctrl+D / EOF
+          if (line.trim().equalsIgnoreCase("exit();"))
+            {
+                // break;
+                System.exit(0);
+            }
+      
+          multilineBuffer.append(line).append("\n");
+      
+          // Count '{' and '}' to detect if we're inside a block
+          for (char c : line.toCharArray()) {
+            if (c == '{') openBraces++;
+            else if (c == '}') openBraces--;
+          }
+      
+          // Only interpret when braces are balanced
+          if (openBraces <= 0) {
+            run(multilineBuffer.toString());
+            multilineBuffer.setLength(0); // clear buffer
+            openBraces = 0;
+          }
+
         }
-    }
+      }
+      
 
     private static void run(String source) {
         Scanner scanner = new Scanner(source);
