@@ -55,7 +55,7 @@ public class Main {
       
           String line = reader.readLine();
           if (line == null) break; // Ctrl+D / EOF
-          if (line.trim().equalsIgnoreCase("exit();"))
+          if (line.trim().equalsIgnoreCase("exit()"))
             {
                 // break;
                 System.exit(0);
