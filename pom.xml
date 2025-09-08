@@ -1,0 +1,13 @@
+<dependency>
+  <groupId>org.jline</groupId>
+  <artifactId>jline</artifactId>
+  <version>3.30.5</version>
+</dependency>
+
+<!-- Optional: better Windows terminal support -->
+<dependency>
+  <groupId>org.jline</groupId>
+  <artifactId>jline-terminal-jansi</artifactId>
+  <version>3.30.5</version>
+  <scope>runtime</scope>
+</dependency>
